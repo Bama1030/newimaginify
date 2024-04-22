@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
-// import { clerkClient } from "@clerk/nextjs";
-import { WebhookEvent, clerkClient } from "@clerk/nextjs/server";
+import { clerkClient } from "@clerk/nextjs/server";
+import { WebhookEvent } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { Webhook } from "svix";
@@ -63,10 +63,11 @@ export async function POST(req: Request) {
 
     const user = {
       clerkId: id,
+      firstName: first_name!,
+      lastName: last_name!,
       email: email_addresses[0].email_address,
       username: username!,
-      firstName: first_name,
-      lastName: last_name,
+      
       photo: image_url,
     };
 
@@ -80,6 +81,7 @@ export async function POST(req: Request) {
         },
       });
     }
+
     return NextResponse.json({ message: "OK", user: newUser });
   }
 
@@ -88,8 +90,8 @@ export async function POST(req: Request) {
     const { id, image_url, first_name, last_name, username } = evt.data;
 
     const user = {
-      firstName: first_name,
-      lastName: last_name,
+      firstName: first_name!,
+      lastName: last_name!,
       username: username!,
       photo: image_url,
     };
@@ -110,5 +112,6 @@ export async function POST(req: Request) {
 
   console.log(`Webhook with and ID of ${id} and type of ${eventType}`);
   console.log("Webhook body:", body);
+
   return new Response("", { status: 200 });
 }
